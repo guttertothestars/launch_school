@@ -64,13 +64,3 @@ def letter_percentages(string)
 
   puts letters_hash
 end
-
-
-
-
-
-
-
-
-
-end
