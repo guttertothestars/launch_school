@@ -1,0 +1,11 @@
+#create a template for written assessments
+add definitions
+ in line XXXX local variable XXX is intialized as XXX object etc.
+
+ scoping differences for method invocation and for method invocation with a block
+
+ p vs puts
+
+ hash#tally
+
+update the pedac algorithm before updating the code
