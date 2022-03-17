@@ -1,3 +1,6 @@
+
+
+
 require 'pry'
 
 INITIAL_MARKER = ' '
@@ -21,10 +24,11 @@ def joinor(arr, delimiter=', ', word='or')
     arr.join(delimiter)
   end
 end
-
+x
 def display_board(brd)
   system 'clear'
   puts "You're an #{PLAYER_MARKER}. The Computer is an #{COMPUTER_MARKER}"
+  puts "Best out of 3 rounds wins"
   puts ""
   puts "     |     |     "
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}  "
@@ -94,6 +98,7 @@ def detect_winner(brd)
 end
 
 # Program Below
+scores = {"Player" => 0, "Computer" => 0}
 loop do # Main game loop
   board = initialize_board
 
@@ -116,6 +121,21 @@ loop do # Main game loop
     prompt("#{detect_winner(board)} won!")
   else
     prompt("It's a tie.")
+  end
+
+  if detect_winner(board) == "Player"
+    scores["Player"] += 1
+  elsif detect_winner(board) == "Computer"
+    scores["Computer"] += 1
+  end
+  prompt "Current score is: Player #{scores["Player"]} & Computer #{scores["Computer"]}"
+
+  if scores["Player"] == 3
+    prompt("Player wins it all")
+    break
+  elsif scores["Computer"] == 3
+    prompt("Computer wins it all")
+    break
   end
 
   prompt("Play again? (Y/N)")
