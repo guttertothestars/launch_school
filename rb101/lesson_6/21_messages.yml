@@ -1,0 +1,23 @@
+welcome: "Welcome to 21!"
+dealer: 'The dealers hand is worth '
+rules:  |
+  -You start with a normal 52-card deck consisting of the 4 suits (hearts, diamonds, clubs, and spades)
+
+  -The deck includes 13 values (2, 3, 4, 5, 6, 7, 8, 9, 10, jack, queen, king, ace).
+
+  -all of the card values are pretty straightforward, except for the ace. The numbers 2 through 10 are worth their face value.
+   The jack, queen, and king are each worth 10, and the ace can be worth 1 or 11.
+   The ace's value is determined each time a new card is drawn from the deck.
+
+  -The goal of Twenty-One is to try to get as close to 21 as possible, without going over. If you go over 21, it's a "bust" and you lose.
+  -The game consists of a "dealer" and a "player". Both participants are initially dealt 2 cards.
+   The player can see their 2 cards, but can only see one of the dealer's cards.
+  -Player turn: the player goes first, and can decide to either "hit" or "stay". A hit means the player will ask for another card.
+   If the total exceeds 21, then the player "busts" and loses.
+
+  -Dealer turn: when the player stays, it's the dealer's turn.
+   The dealer must follow a strict rule for determining whether to hit or stay: hit until the total is at least 17.
+   If the dealer busts, then the player wins.
+
+  -Comparing cards: when both the player and the dealer stay, it's time to compare the total value of the cards and see who has the highest value.
+   If both the dealer and player have the same value in their hands, it is a tie.

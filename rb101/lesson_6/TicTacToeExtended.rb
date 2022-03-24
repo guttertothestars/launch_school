@@ -1,7 +1,4 @@
-
-
-
-require 'pry'
+#look for places to slot in ternary operators
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -24,7 +21,7 @@ def joinor(arr, delimiter=', ', word='or')
     arr.join(delimiter)
   end
 end
-x
+
 def display_board(brd)
   system 'clear'
   puts "You're an #{PLAYER_MARKER}. The Computer is an #{COMPUTER_MARKER}"
@@ -60,6 +57,14 @@ def empty_squares(brd) # inspects but does not mutate, creates an array of board
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
+def place_piece!(board, current_player) #This could be improved. Maybe a ternary
+  if current_player == "human"
+    player_places_piece!(board)
+  else
+    computer_places_piece!(board)
+  end
+end
+
 def player_places_piece!(brd) # mutates
   square = '' # initializing outside the loop so it remains accessible
   loop do
@@ -71,13 +76,56 @@ def player_places_piece!(brd) # mutates
   brd[square] = PLAYER_MARKER
 end
 
-def computer_places_piece!(brd) #mutates
-  square = empty_squares(brd).sample
+def find_at_risk_square(line, board, marker)
+  if board.values_at(*line).count(marker) == 2
+    board.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
+  end
+end
+
+def computer_places_piece!(brd)
+  square = nil
+
+  # attack first
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+  end
+
+  # Defense bb
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
+      break if square
+    end
+end
+
+  if brd[5] == INITIAL_MARKER
+    square = 5
+  end
+
+  if !square
+    square = empty_squares(brd).sample
+  end
+
   brd[square] = COMPUTER_MARKER
 end
 
 def board_full?(brd)
   empty_squares(brd).empty?
+end
+
+def alternate_player!(current_player) #This could be improved. Maybe a ternary
+  loop do
+    if current_player == "human"
+      current_player.replace('computer')
+      break
+    end
+    if current_player == 'computer'
+      current_player.replace('human')
+      break
+    end
+  end
+  current_player
 end
 
 def someone_won?(brd)
@@ -97,21 +145,33 @@ def detect_winner(brd)
   nil
 end
 
-# Program Below
-scores = {"Player" => 0, "Computer" => 0}
-loop do # Main game loop
-  board = initialize_board
+# Game Program Below
+scores = { "Player" => 0, "Computer" => 0 }
+current_player = 'human' # initialize current player so it is in all scopes
 
+loop do # Main game loop
+  loop do # loop determines who goes first
+    prompt("Would you like to go first? Y/N")
+    go_first = gets.chomp
+    if go_first.downcase.start_with?('y')
+      current_player = 'human'
+      break
+    elsif go_first.downcase.start_with?('n')
+      current_player = 'computer'
+      break
+    else
+      prompt("That's not a valid answer")
+    end
+  end
+
+  board = initialize_board
   initialize_board
   display_board(board)
 
-  loop do # game round loop
+  loop do
     display_board(board)
-
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
-
-    computer_places_piece!(board)
+    place_piece!(board, current_player) # need to write this method
+    current_player = alternate_player!(current_player) # and also this method
     break if someone_won?(board) || board_full?(board)
   end
 
@@ -128,7 +188,7 @@ loop do # Main game loop
   elsif detect_winner(board) == "Computer"
     scores["Computer"] += 1
   end
-  prompt "Current score is: Player #{scores["Player"]} & Computer #{scores["Computer"]}"
+  prompt "Current score is: Player #{scores['Player']} & Computer #{scores['Computer']}"
 
   if scores["Player"] == 3
     prompt("Player wins it all")
