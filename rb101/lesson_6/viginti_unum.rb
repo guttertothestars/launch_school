@@ -49,44 +49,62 @@ def bust?(hand) # seperate hand-numeric-conversion from bust method.
 end
 
 ##################### DISPLAYS AND ART ############################
+score_and_round = { player_score: 0, dealer_score: 0, current_round: 1 }
 
-def display_scoreboard(current_round, player_score, _computer_score)
-  puts "******************************"
-  puts "**         Round #{current_round}          **"
-  puts "******************************"
-  puts "** Player: #{player_score} ** Dealer: #{dealer_score} **"
-  puts "******************************"
+def display_scoreboard(game_data)
+  puts "*" * 30
+  puts "**         Round #{game_data[:current_round]}          **"
+  puts "*" * 30
+  print "** Player: #{game_data[:player_score]} "
+  print "** Dealer: #{game_data[:dealer_score]}   **\n"
+  puts "*" * 30
+end
+
+def show_player_hand(hand)
+  index = 0
+
+  puts "Your hand"
+  puts "*#{'-' * 9}*"
+  hand.size.times do
+    if hand[index][:card_value] == 10
+      puts "|#{hand[index][:card_value]} of #{hand[index][:suit]}  |"
+    else
+    puts "|#{hand[index][:card_value]}  of #{hand[index][:suit]}  |"
+    end
+  index += 1
+  end
+  puts "*#{'-' * 9}*"
 end
 
 def flash(msg)
   5.times do
     print "\r#{msg}"
-    sleep 0.5
+    sleep 0.4
     print "\r#{' ' * msg.size}" # Send return and however many spaces are needed.
-    sleep 0.5
+    sleep 0.4
     print "\r#{msg}"
   end
 end
 
-def card_art()
-    puts "*---------*             "
-    puts "|A        |             "
-    puts "|         |             "
-    puts "|    ♣    |  *---------*"
-    puts "|         |  |10       |"
-    puts "|        A|  |         |"
-    puts "*---------*  |    ♣    |"
-    puts "             |         |"
-    puts "             |       10|"
-    puts "             *---------*"
-    flash("Welcome to 21!!!")
+def card_art
+  puts "*---------*             "
+  puts "|A        |             "
+  puts "|         |             "
+  puts "|    ♣    |  *---------*"
+  puts "|         |  |10       |"
+  puts "|        A|  |         |"
+  puts "*---------*  |    ♣    |"
+  puts "             |         |"
+  puts "             |       10|"
+  puts "             *---------*"
+  flash("Welcome to 21!!!")
 end
 
 
 ##################### INITIALIZE DECK ############################
 def initialize_deck_of_cards
+  suits = ['♥', '♦', '♣', '♠']
   card_values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
-  suits = ['hearts', 'diamonds', 'clubs', 'spades']
 
   deck = []
 
@@ -134,34 +152,33 @@ def player_turn(deck, hand)
   end
 end
 
-
-
-
 # 3. Player turn: hit or stay
 #  - repeat until bust or "stay"
 # 4. If player bust, dealer wins.
 
 ####################### GAME ###############################
-card_art()
+card_art
 
 # Hello, vilkomen, want rules?
-
-initialize_deck_of_cards
 DECK_OF_CARDS = initialize_deck_of_cards
 current_deck = DECK_OF_CARDS.shuffle
 
 player_hand = deal_hand(current_deck)
 dealer_hand = deal_hand(current_deck)
+show_player_hand
 
-loop do #player turn loop
+# display_hands # <--need to write this method
+
+loop do # player turn loop
   if bust?(player_hand)
-    puts "Dealer Wins!"
+    flash("Dealer Wins!")
+    score_and_round[:dealer_score] += 1
+    score_and_round[:current_round] += 1
     break
   end
 
   player_turn(current_deck, player_hand)
-
+  binding.pry
 end
 
-
-# display_hands # <--need to write this method
+puts "fin"
