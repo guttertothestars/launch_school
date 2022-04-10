@@ -105,54 +105,58 @@ case statement
 
 =end
 
-def ec(command, stack, register)
-  if command == "PUSH"
-    stack.push(register.first)
-  elsif command == "ADD"
-    register << register.first + stack.last
-    stack.pop
-    register.shift
-  elsif command == "SUB"
-    register << register.first - stack.last
-    stack.pop
-    register.shift
-  elsif command == "MULT"
-    register << register.first * stack.last
-    stack.pop
-    register.shift
-  elsif command == "DIV"
-    register << stack.last / register.first
-    stack.pop
-    register.shift
-  elsif command == "MOD"
-    register << stack.last % register.first
-    stack.pop
-    register.shift
-  elsif command == "POP"
-    register.push(stack.pop)
-    register.shift
-  elsif command == "PRINT"
-    p register.first
+
+minilang('5 PRINT PUSH 3 PRINT ADD PRINT')
+minilang('5 PUSH 3 MULT PRINT')
+
+def parse_command(command, stack, register, output)
+  case command
+  when "PUSH"
+    stack << register[0]
+  when "ADD"
+    register[0] = register[0] + stack.pop
+  when "SUB"
+    register[0] = register[0] - stack.pop
+  when "MULT"
+    register[0] = register[0] * stack.pop
+  when "DIV"
+    register[0] = register[0] / stack.pop
+  when "MOD"
+    register[0] = register[0] % stack.pop
+  when "POP"
+    register[0] = stack.pop
+  when "PRINT"
+    output << register[0]
   else
-    register.push(command.to_i)
-    register.shift
+    register[0] = command
   end
 end
 
-
-#def is_num?(string)
-#  string == string.to_i.to_s
-#end
+def cleanup_command_string(string)
+  commands = string.split
+  commands.map! do |command|
+    if command.length <= 2
+      command = command.to_i
+    else
+      command
+    end
+  end
+  commands
+end
 
 def minilang(command_string)
-  command_string = command_string.split
-  register = []
-  stack = [0]
+  stack_array = []
+  register_array = []
+  output_array = []
 
-  command_string.each do |command|
-    ec(command, stack, register)
-  end
+  commands = cleanup_command_string(command_string)
+
+
+    commands.each do |command|
+      parse_command(command, stack_array, register_array, output_array)
+    end
+
+    output_array.each do |element|
+      puts element
+    end
 end
-
-
-minilang('5 PUSH 3 MULT PRINT')

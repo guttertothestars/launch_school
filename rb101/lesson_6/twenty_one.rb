@@ -1,3 +1,4 @@
+
 =begin
 Broad Strokes Pseudo-code
 0. Welcome and option for rules
